@@ -1,0 +1,59 @@
+/* Information for new username/password */
+.register-info
+{
+    color: gray;
+    font-size: small;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 2rem;
+    padding-top: 1rem;
+    text-align: center;
+    width: 50%;
+}
+
+/* Size for brand */
+nav .navbar-brand
+{
+    font-size: xx-large;
+}
+
+/* Colors for brand */
+nav .navbar-brand .red
+{
+    color: #ea433b;
+}
+
+a.user-set {
+  color: inherit;
+  text-decoration: none;
+}
+
+.user-set:hover {
+  color: lightblue;
+}
+
+.code-style
+{
+  font-family: Courier, monospace;
+  white-space: pre;
+}
+
+.code-style-title
+{
+  font-family: Courier, monospace;
+}
+
+textarea.create-flashcards
+{
+  min-height: 1rem;
+}
+
+.term
+{
+  width: 79ch;
+}
+
+.hidden
+{
+  display: none;
+}

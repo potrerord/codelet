@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+
+{% block headscripts %}{% endblock %}
+
+{% block title %}
+  Create
+{% endblock %}
+
+{% block main %}
+  <form action="/create" class="form-horizontal" method="post">
+    <div>
+      <button class="btn btn-primary float-end" type="submit">Save set</button>
+      <h1 class="mb-4" style="text-align: left">Create new set</h1>
+    </div>
+    <div class="mb-3 create-set">
+      <h5 for="input-title">Title</h5>
+      <input autocomplete="off" class="create-flashcards code-style form-control" id="input-title" name="input-title" placeholder="Enter a title for your set." required>
+    </div>
+    <div class="mb-4 create-set">
+      <h5 for="input-description">Description</h5>
+      <input autocomplete="off" class="create-flashcards code-style form-control" id="input-description" name="input-description" placeholder="Enter a description for your set.">
+    </div>
+    <h2 class="mb-3">Flashcards</h2>
+    <div id="div-add-cards">
+      <div class="card mb-4" id="div-term-definition-1"> 
+        <div class="card-body">
+          <h6 class="card-title" id="card-number-1">
+            1
+          </h6> 
+          <div class="row g-3">
+            <div class="col-lg">
+              <label for="input-term">Term</label>
+              <textarea class="form-control create-flashcards code-style" id="textarea-term-1" name="textarea-term-1" placeholder="Enter term." required></textarea>
+            </div>
+            <div class="col-md">
+              <label for="input-definition">Definition</label>
+              <textarea class="form-control create-flashcards code-style" id="textarea-definition-1" name="textarea-definition-1" placeholder="Enter definition." required></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+      
+      <div class="text-center">
+        <button type="button" class="btn btn-secondary" id="button-add-card">Add card</button>
+      </div>
+
+    <div>
+      <button class="btn btn-primary btn-lg float-end" id="button-save-set" type="submit">Save set</button>
+    </div>
+  </form>
+{% endblock %}
+
+{% block footscripts %}
+  <script>
+    // Initialize new flashcard counter.
+    let newCardCounter = 2
+
+    // Resize textareas dynamically to match height of contents.
+    let textareas = document.querySelectorAll('textarea.create-flashcards');
+    for (let textarea of textareas) {
+      textarea.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+      });
+    };
+
+    // Clone term/def divs into div-add-cards on "Add Card" button click.
+    let buttonAddCard = document.getElementById('button-add-card');
+
+    buttonAddCard.addEventListener('click', function() {
+      let originalDivTermDefinition = document.getElementById('div-term-definition-1');
+      let clonedDivTermDefinition = originalDivTermDefinition.cloneNode(true);
+
+      // Update id and names of clone.
+      let clonedH6CardNumber = clonedDivTermDefinition.querySelector('h6[id="card-number-1"]');
+      let clonedTextareaTerm = clonedDivTermDefinition.querySelector('textarea[id="textarea-term-1"]');
+      let clonedTextareaDefinition = clonedDivTermDefinition.querySelector('textarea[id="textarea-definition-1"]')
+      
+      // Update id of cloned div container.
+      clonedDivTermDefinition.id = 'div-term-definition-' + newCardCounter;
+
+      // Update id and name of cloned textareas.
+      clonedTextareaTerm.id = 'textarea-term-' + newCardCounter;
+      clonedTextareaTerm.name = 'textarea-term-' + newCardCounter;
+      clonedTextareaDefinition.id = 'textarea-definition-' + newCardCounter;
+      clonedTextareaDefinition.name = 'textarea-definition-' + newCardCounter;
+
+      // Clear entered text from cloned textareas.
+      clonedTextareaTerm.value = '';
+      clonedTextareaDefinition.value = '';
+
+      // Update id and text value of h6 card number.
+      clonedH6CardNumber.id = 'card-number-' + newCardCounter;
+      clonedH6CardNumber.textContent = newCardCounter;
+      
+      // Increment card counter variable for future renaming.
+      newCardCounter++;
+
+      // Append clone to DOM.
+      let divAddCards = document.getElementById('div-add-cards');
+      divAddCards.appendChild(clonedDivTermDefinition);
+    });
+
+
+
+  </script>
+{% endblock %}

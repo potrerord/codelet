@@ -1,0 +1,275 @@
+{% extends "layout.html" %}
+
+{% block headscripts %}
+  <link rel="stylesheet"
+        href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai.min.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+{% endblock %}
+
+<!-- webpage title (tabs, etc.) -->
+{% block title %}
+    {{ set_data["title"] }}
+{% endblock %}
+
+<!--
+TODO
+
+new features:
+- create quizlet-style flashcard that can flip and "next"
+
+syntax highlighting:
+- fix switches so the def switches apply to the defs and not the terms
+- enable syntax highlighting for terms/defs separately
+- manually set the flashcard language for syntax highlighting
+- allow for "default syntax highlighting" on/off
+- pick syntax highlight theme from a dropdown
+
+-->
+
+<!-- main page content -->
+{% block main %}
+
+  <!-- h1 for large header text -->
+  <h1 class="mb-1">
+
+    <!-- row class necessary for column formatting -->
+    <div class="row">
+
+      <!-- set title, regular column -->
+      <div class="col code-style-title">
+        "{{ set_data["title"] }}".set
+      </div>
+
+      <!-- edit set button, small column -->
+      <div class="col-1">
+
+        <!-- link to the "/edit/[set_id]" page -->
+        <a href="{{ url_for('edit', set_id=set_data.id) }}">
+
+          <!-- edit set button -->
+          <button class="btn btn-primary float-end" id="button-edit-set">Edit set</button>
+        </a>
+      </div>
+    </div>
+  </h1>
+
+  <!-- set info badges -->
+  <div class="row m-auto">
+
+    <!-- column to keep info badges left-aligned -->
+    <div class="col">
+
+      <!-- number of cards badge -->
+      <div class="badge bg-secondary">
+        {{ set_data["number_of_cards"] }} cards
+      </div>
+
+      <!-- description badge -->
+      <div class="badge bg-secondary">
+        {% if not set_data["description"] %}
+          No description
+        {% else %}
+          {{ set_data["description"] }}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- line -->
+  <hr class="mb-4 mt-4">
+
+  <!-- term / definition column headers -->
+  <div class="row">
+
+    <!-- container for "term" and master syntax highlight checkbox -->
+    <div class="col">
+
+      <!-- header text: term -->
+      <h5>
+        Term
+      </h5>
+
+      <!-- master syntax highlight checkbox below header text -->
+      <input class="form-check-input master-syntax-highlight-switch" id="master-syntax-highlight-switch" type="checkbox">
+
+      <!-- label for the master syntax highlight checkbox -->
+      <label class="form-check-label mb-3" for="master-syntax-highlight-switch" id="label-master-syntax-highlight-switch">
+        Toggle syntax highlighting for all
+      </label>
+    </div>
+
+    <!-- header text: definition -->
+    <h5 class="col">
+      Definition
+    </h5>
+  </div>
+
+  <!-- div container for all cards -->
+  <div class="row">
+
+    <!-- iterate through flashcard data from backend -->
+    {% for flashcard in flashcard_data %}
+
+      <!-- each individual term/def pair -->
+      <div class="card mb-3 shadow">
+
+        <!-- card title ("1/7", for example) -->
+        <h6 class="card-title m-3 mb-0">
+          {{ loop.index }} / {{ set_data["number_of_cards"] }}
+        </h6> 
+
+        <!-- card body container (bootstrap) -->
+        <div class="card-body">
+          
+          <!-- row with two columns: one for term, one for def -->
+          <div class="row row-cols-2">
+
+            <!-- term column -->
+            <div class="col">
+
+              <!-- nested card containing term -->
+              <div class="card h-100">
+
+                <!-- preformatted code text from flashcard data -->
+                <pre class="mb-0"><code id="code-term-{{ loop.index }}">{{ flashcard["term"] }}</code></pre>
+              </div>
+            </div>
+
+            <!-- def column -->
+            <div class="col">
+
+              <!-- nested card containing def -->
+              <div class="card h-100">
+
+                <!-- preformatted code text from flashcard data -->
+                <pre class="mb-0"><code id="code-definition-{{ loop.index }}">{{ flashcard["definition"] }}</code></pre>
+              </div>
+            </div>
+          </div>
+
+          <!-- new row with two columns to match the row above -->
+          <div class="row row-cols-2">
+
+            <!-- term column -->
+            <div class="col">
+
+              <!-- term: individual syntax highlight checkbox (bootstrap)-->
+              <div class="form-check form-switch mt-1 float-end">
+
+                <!-- term: actual checkbox -->
+                <input class="form-check-input syntax-highlight-switch" data-codeId="code-definition-{{ loop.index }}" type="checkbox" id="term-syntax-highlight-switch-{{ loop.index }}">
+
+                <!-- term: checkbox label -->
+                <label class="form-check-label" for="term-syntax-highlight-switch-{{ loop.index }}">Syntax highlighting</label>
+              </div>
+            </div>
+
+            <!-- def column -->
+            <div class="col">
+
+              <!-- def: individual syntax highlight checkbox (bootstrap)-->
+              <div class="form-check form-switch mt-1 float-end">
+
+                <!-- def: actual checkbox -->
+                <input class="form-check-input syntax-highlight-switch" data-definitionId="code-definition-{{ loop.index }}" type="checkbox" id="definition-syntax-highlight-switch-{{ loop.index }}">
+                
+                <!-- def: checkbox label -->
+                <label class="form-check-label" for="definition-syntax-highlight-switch-{{ loop.index }}">Syntax highlighting</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+    <!-- end of the individual flashcard cards from backend -->
+    {% endfor %}
+  </div>
+
+<!-- end of page -->
+{% endblock %}
+
+{% block footscripts %}
+  <script>
+    // Apply syntax highlighting to all of the terms by default.
+    hljs.highlightAll();
+
+    // Append detected language to syntax highlight switches.
+    let syntaxHighlightSwitches = document.querySelectorAll('.syntax-highlight-switch');
+    window.addEventListener('load', () => {
+      syntaxHighlightSwitches.forEach(function(syntaxHighlightSwitch) {
+        // Get detected language.
+        let cardNumber = syntaxHighlightSwitch.id.match(/\d+/)[0]; // Extract number from id
+        let codeElement = document.querySelector(`#code-term-${cardNumber}`); // Select corresponding code element
+        let codeElementClassNames = codeElement.className.split(' ');
+        let languageClass = codeElementClassNames.find(name => name.startsWith('language-'));
+        let detectedLanguage = languageClass.replace('language-', '');
+        
+        // Append detected language.
+        let switchLabel = document.querySelector(`label[for="syntax-highlight-switch-${cardNumber}"]`)
+        let detectedLanguageTextNode = document.createTextNode(` (autodetected: ${detectedLanguage})`);
+        switchLabel.appendChild(detectedLanguageTextNode);
+      });
+    });
+
+    // Toggle syntax highlighting from highlight.js
+    const toggleHighlight = function toggleHighlightFunction(switchElement, isOn) {
+      let cardNumber = switchElement.id.match(/\d+/)[0]; // Extract number from switch id
+      let codeElement = document.querySelector(`#code-term-${cardNumber}`); // Select corresponding code element
+
+      if (isOn) {
+        // If the switch is turned on, remove highlight overrides.
+        codeElement.style = "";
+        codeElement.querySelectorAll('span').forEach(span => span.style = '');
+      } else {
+        // If the switch is off, override highlight.js.
+        codeElement.style.backgroundColor = 'white';
+        codeElement.style.color = 'black';
+        codeElement.style.fontFamily = 'Courier';
+        codeElement.querySelectorAll('span').forEach(span => {
+          span.style.color = 'black';
+          span.style.fontWeight = 'normal';
+        });
+      }
+    };
+
+    // Toggle syntax highlighting according to switch position.
+    window.addEventListener('load', () => {
+      syntaxHighlightSwitches.forEach(function(syntaxHighlightSwitch) {
+        syntaxHighlightSwitch.addEventListener('change', function() {
+          toggleHighlight(this, this.checked);
+        });
+
+        // Call the function immediately to start with switch off by default.
+        toggleHighlight(syntaxHighlightSwitch, false);
+      });
+    });
+
+    // Tie the master syntax highlight switch to all other syntax highlight switches.
+    let masterSyntaxHighlightSwitch = document.querySelector('#master-syntax-highlight-switch')
+    masterSyntaxHighlightSwitch.addEventListener('change', function() {
+      let masterChecked = this.checked;
+      syntaxHighlightSwitches.forEach(function(syntaxHighlightSwitch) {
+        // Update switches
+        syntaxHighlightSwitch.checked = masterChecked;
+
+        // Dispatch "change" to trigger actual switch effect
+        syntaxHighlightSwitch.dispatchEvent(new Event('change'));
+      });
+    });    
+
+    // // Toggle definition reveals.
+    // window.addEventListener('load', () => {
+    //   let revealDefinitionSwitches = document.querySelectorAll('.reveal-definition')
+    //   revealDefinitionSwitches.forEach(function(revealDefinitionSwitch) {
+    //     revealDefinitionSwitch.addEventListener('change', function() {
+    //       // Get definition element
+    //       let definitionId = revealDefinitionSwitch.dataset.definitionId;
+          
+    //       // Toggle definition visibility
+    //       let definition = document.getElementById(definitionId);
+    //       definition.classList.toggle('hidden');
+    //     });
+    //   });
+    // });
+  </script>
+{% endblock %}

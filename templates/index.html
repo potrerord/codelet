@@ -1,0 +1,189 @@
+{% extends "layout.html" %}
+
+{% block headscripts %}{% endblock %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+  <h1 class="mb-5">
+    {{ user_username }}'s sets
+  </h1>
+  <div id="today-divider" class="row">
+      <h4 class="col-2">
+        PAST 24 HOURS
+      </h4>
+      <div class="col">
+        <hr>
+      </div>
+    </div>
+  <div id="div-all-cards">
+    <div id="div-today-cards" class="mb-5">
+      {% for set in past_day_sets %}
+        <a class="user-set" href="{{ url_for('set', set_id=set.id) }}">
+          <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+              <div class="row row-cols-2">
+                <div class="col">
+                  <h5 class="card-title">
+                    {{ set["title"] }}
+                  </h5>
+                  <div class="card-subtitle">
+                    <div>
+                    {{ set["number_of_cards"] }} cards
+                    </div>
+                    <div>
+                      {{ set["description"] }}
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="float-end last-updated" id="set-{{ set['id'] }}" data-utc="{{ set['update_utc'] }}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+    <div id="week-divider" class="row">
+      <h4 class="col-2">
+        PAST 7 DAYS
+      </h4>
+      <div class="col">
+        <hr>
+      </div>
+    </div>
+    <div id="div-week-cards" class="mb-5">
+      {% for set in past_week_sets %}
+        <a class="user-set" href="{{ url_for('set', set_id=set.id) }}">
+          <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+              <div class="row row-cols-2">
+                <div class="col">
+                  <h5 class="card-title">
+                    {{ set["title"] }}
+                  </h5>
+                  <div class="card-subtitle">
+                    <div>
+                    {{ set["number_of_cards"] }} cards
+                    </div>
+                    <div>
+                      {{ set["description"] }}
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="float-end last-updated" id="set-{{ set['id'] }}" data-utc="{{ set['update_utc'] }}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+    <div id="month-divider" class="row">
+      <h4 class="col-2">
+        PAST 30 DAYS
+      </h4>
+      <div class="col">
+        <hr>
+      </div>
+    </div>
+    <div id="div-month-cards" class="mb-5">
+      {% for set in past_month_sets %}
+        <a class="user-set" href="{{ url_for('set', set_id=set.id) }}">
+          <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+              <div class="row row-cols-2">
+                <div class="col">
+                  <h5 class="card-title">
+                    {{ set["title"] }}
+                  </h5>
+                  <div class="card-subtitle">
+                    <div>
+                    {{ set["number_of_cards"] }} cards
+                    </div>
+                    <div>
+                      {{ set["description"] }}
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="float-end last-updated" id="set-{{ set['id'] }}" data-utc="{{ set['update_utc'] }}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+    <div id="ever-divider" class="row">
+      <h4 class="col-2">
+        ALL OTHER SETS
+      </h4>
+      <div class="col">
+        <hr>
+      </div>
+    </div>
+    <div id="div-past-ever-cards" class="mb-5">
+      {% for set in past_ever_sets %}
+        <a class="user-set" href="{{ url_for('set', set_id=set.id) }}">
+          <div class="card mb-3 shadow-sm">
+            <div class="card-body">
+              <div class="row row-cols-2">
+                <div class="col">
+                  <h5 class="card-title">
+                    {{ set["title"] }}
+                  </h5>
+                  <div class="card-subtitle">
+                    <div>
+                    {{ set["number_of_cards"] }} cards
+                    </div>
+                    <div>
+                      {{ set["description"] }}
+                    </div>
+                  </div>
+                </div>
+                <div class="col">
+                  <div class="float-end last-updated" id="set-{{ set['id'] }}" data-utc="{{ set['update_utc'] }}">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block footscripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/luxon/2.0.2/luxon.min.js"></script>
+  <script>
+    // Format timestamps according to user's session.
+    document.addEventListener('DOMContentLoaded', () => {
+      // Get the user's timezone and language.
+      let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      let language = navigator.language;
+
+      // Get all "last updated" divs.
+      let lastUpdateDivs = document.querySelectorAll('.last-updated');
+      lastUpdateDivs.forEach(function(lastUpdateDiv) {
+        // Get the update_datetime from the lastUpdateDiv's data tag.
+        let update_datetime = new Date(lastUpdateDiv.dataset.utc + 'Z');
+        let luxonUpdateDateTime = luxon.DateTime.fromJSDate(update_datetime);
+
+        // Format the Luxon update datetime.
+        let f_update_datetime = luxonUpdateDateTime.toRelative();
+
+        // Add formatted datetime text to the "last update" div.
+        lastUpdateDiv.textContent = 'Last updated ' + f_update_datetime;
+      });
+    });
+  </script>
+{% endblock %}

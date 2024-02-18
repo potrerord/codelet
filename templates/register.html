@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block headscripts %}{% endblock %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+    <form action="/register" class="text-center" method="post">
+        <div class="register-info">
+            Username must only contain alphanumeric characters/underscores/hyphens and have a length of 3-16 characters.
+        </div>
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" pattern="^[a-zA-Z0-9_-]+$.{8,20}" placeholder="New username" required title="Must only contain alphanumeric characters/underscores/hyphens and have a length of 3-16 characters." type="text">
+        </div>
+        <div class="register-info">
+            Password must contain at least one number, one uppercase letter, one lowercase letter, one special character, and have a length of 8-20 characters.
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="password" name="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_-]).{8,20}" placeholder="New password" required title="Must contain at least one number, one uppercase letter, one lowercase letter, one special character, and have a length of 8-20 characters." type="password">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" id="confirmation" name="confirmation" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_-]).{8,20}" placeholder="Confirm password" required title="Must contain at least one number, one uppercase letter, one lowercase letter, one special character, and have a length of 8-20 characters." type="password">
+        </div>
+        <button class="btn btn-primary" type="submit">Register</button>
+    </form>
+{% endblock %}
+
+{% block footscripts %}
+{% endblock %}

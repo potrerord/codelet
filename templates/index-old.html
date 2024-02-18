@@ -1,0 +1,81 @@
+{% extends "layout.html" %}
+
+{% block headscripts %}{% endblock %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+  <h1 class="mb-5">
+    {{ user_username }}'s sets
+  </h1>
+  {% for set in user_sets %}
+    <a class="user-set" href="{{ url_for('set', set_id=set.id) }}">
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="row row-cols-2">
+            <div class="col">
+              <h5 class="card-title">
+                {{ set["title"] }}
+              </h5>
+              <div class="text-secondary">
+                {{ set["description"] }}
+              </div>
+              <div>
+                {{ set["number_of_cards"] }} cards
+              </div>
+            </div>
+            <div class="col">
+              <div class="float-end last-updated" id="set-{{ set['id'] }}" data-utc="{{ set['update_utc'] }}">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </a>
+  {% endfor %}
+{% endblock %}
+
+{% block footscripts %}
+  <script>
+    // Get current datetime.
+    let currentDatetime = new Date();
+
+
+
+
+    // Format timestamps according to user's session.
+    document.addEventListener('DOMContentLoaded', () => {
+      // Get the user's timezone and language.
+      let timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      let language = navigator.language;
+
+      // Define datetime formatting.
+      let options = {
+          year:         'numeric',
+          month:        'long',
+          day:          'numeric',
+          hour:         '2-digit',
+          minute:       '2-digit',
+          // second:       '2-digit',
+          timeZone:     timezone,
+          timeZoneName: 'short',
+          weekday:      'short',
+      };
+
+      // Get all "last updated" divs.
+      let lastUpdateDivs = document.querySelectorAll('.last-updated');
+      lastUpdateDivs.forEach(function(lastUpdateDiv) {
+        // Get the update_datetime from the lastUpdateDiv's data tag.
+        let update_datetime = new Date(lastUpdateDiv.dataset.utc + 'Z');
+
+        // Format update_datetime.
+        let f_update_datetime = update_datetime.toLocaleString(language, options);
+
+        // Add formatted datetime text to the "last update" div.
+        lastUpdateDiv.textContent = 'Last updated ' + f_update_datetime;
+      });
+    });
+  </script>
+{% endblock %}

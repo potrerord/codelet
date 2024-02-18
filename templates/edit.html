@@ -1,0 +1,184 @@
+{% extends "layout.html" %}
+
+{% block headscripts %}{% endblock %}
+
+{% block title %}
+  Edit set: "{{ set_data["title"] }}"
+{% endblock %}
+
+{% block main %}
+  <form action="/edit/{{ set_data['id']}}" class="form-horizontal" id="form-edit-set" method="post">
+    <input type="hidden" id="input-deleted-cards-list" name="input-deleted-cards-list">
+    <div>
+      <button class="btn btn-primary float-end" type="submit">Save set</button>
+      <h1 class="mb-4" style="text-align: left">Edit set</h1>
+    </div>
+    <div class="mb-3 create-set">
+      <h5 for="input-title">Title</h5>
+      <input autocomplete="off" class="create-flashcards code-style form-control" id="input-title" name="input-title" placeholder="Enter a title for your set." required value="{{ set_data['title'] }}">
+    </div>
+    <div class="mb-4 create-set">
+      <h5 for="input-description">
+        Description
+      </h5>
+      <input autocomplete="off" class="create-flashcards code-style form-control" id="input-description" name="input-description" placeholder="Enter a description for your set." value="{{ set_data['description'] }}">
+    </div>
+    <h2 class="mb-3">Flashcards</h2>
+    <div class="row">
+      <div class="col">
+        <h5>
+          Term
+        </h5>
+      </div>
+      <div class="col">
+        <h5>
+          Definition
+        </h5>
+      </div>
+    </div>
+    <div id="div-all-cards">
+      {% for flashcard in flashcard_data %}
+        <div class="card mb-3 shadow" id="div-existing-card-{{ flashcard['id'] }}">
+          <div class="row">
+            <div class="col">
+              <h6 class="card-title m-3 mb-0">
+                {{ loop.index }}
+              </h6>
+            </div>
+            <div class="col">
+              <button type="button" aria-label="Close" class="button-delete-card btn-close float-end m-3" data-cardId="div-existing-card-{{ flashcard['id'] }}" id="button-delete-{{ flashcard['id'] }}"></button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row row-cols-2">
+              <div class="col">
+                <div class="card">
+                  <textarea class="form-control code-style w-100" id="textarea-term-{{ flashcard['id'] }}" name="textarea-term-{{ flashcard['id'] }}" required>{{ flashcard["term"] }}</textarea>
+                </div>
+              </div>
+              <div class="col">
+                <textarea class="form-control code-style w-100" id="textarea-definition-{{ flashcard['id'] }}" name="textarea-definition-{{ flashcard['id'] }}" required>{{ flashcard["definition"] }}</textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    <div class="text-center">
+      <button type="button" class="btn btn-secondary" id="button-add-card">Add card</button>
+    </div>
+    <div>
+      <button class="btn btn-primary btn-lg float-end" id="button-save-set" type="submit">Save set</button>
+    </div>
+  </form>
+{% endblock %}
+
+{% block footscripts %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+    // Import jQuery.
+  </script>
+  <script>
+
+    // Resize textareas dynamically to match height of contents.
+    let textareas = document.querySelectorAll('textarea');
+    for (let textarea of textareas) {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+      textarea.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = this.scrollHeight + 'px';
+      });
+    };
+
+    // Initialize new flashcard counter.
+    let newCardCounter = parseInt("{{ set_data['number_of_cards'] }}") + 1;
+    
+    // When the "Add Card" button is clicked,
+    let buttonAddCard = document.getElementById('button-add-card');
+    buttonAddCard.addEventListener('click', function() {
+      // Create "newCard" div inside div-all-cards.
+      let divAllCards = document.getElementById('div-all-cards');
+      let newCard = document.createElement('div');
+
+      // Create new inner templated HTML inside newCard div. New cards
+      // will have "new" in their id.
+      newCard.innerHTML = `
+        <div class="card mb-3 shadow" id="div-new-card-${newCardCounter}">
+          <div class="row">
+            <div class="col">
+              <h6 class="card-title m-3 mb-0">
+                ${newCardCounter} <span class="badge bg-info m-1 shadow-sm">New</span></h5>
+              </h6>
+            </div>
+            <div class="col">
+              <button type="button" aria-label="Close" class="button-delete-card btn-close float-end m-3" data-cardId="div-new-card-${newCardCounter}" id="button-delete-${newCardCounter}"></button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="row row-cols-2">
+              <div class="col">
+                <div class="card">
+                  <textarea class="form-control code-style w-100" id="textarea-new-term-${newCardCounter}" name="textarea-new-term-${newCardCounter}" required></textarea>
+                </div>
+              </div>
+              <div class="col">
+                <textarea class="form-control code-style w-100" id="textarea-new-definition-${newCardCounter}" name="textarea-new-definition-${newCardCounter}" required></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Append the newCard with the innerHTML to the bottom of divAllCards.
+      divAllCards.appendChild(newCard);
+
+      // Increment the counter for numbering future new cards.
+      newCardCounter ++;
+    
+      // Apply/re-apply auto-height feature to all textareas.
+      let newTextareas = document.querySelectorAll('textarea');
+      for (let newTextarea of newTextareas) {
+        newTextarea.style.height = 'auto';
+        newTextarea.style.height = newTextarea.scrollHeight + 'px';
+        newTextarea.addEventListener('input', function () {
+          this.style.height = 'auto';
+          this.style.height = this.scrollHeight + 'px';
+        });
+      }
+    });
+
+    // Create empty list of deleted cards to send to server.
+    let deletedCardsList = [];
+
+    // When the "delete" X button is clicked on each card,
+    document.body.addEventListener('click', function(event) {
+      if (event.target.classList.contains('button-delete-card')) {
+        // Get card ID from data attribute.
+        let cardId = event.target.getAttribute('data-cardId');
+        
+        // If the cardId does not include "new",
+        if (!cardId.includes("new")) {
+          // Add card ID to "delete" list to send to backend.
+          deletedCardsList.push(cardId);
+        }
+
+        // Select the card using the card ID.
+        let cardToDelete = document.getElementById(cardId);
+
+        // Fade out the card (jQuery).
+        $(cardToDelete).fadeOut('slow', function() {
+          // Remove the card after the fadeout effect is complete.
+          $(this).remove();
+        });
+      }
+    });
+
+    // When the "Save Set" button is clicked,
+    let buttonSaveSet = document.getElementById('button-save-set');
+    buttonSaveSet.addEventListener('click', function(event) {
+      // Update hidden deleted cards form field with deletedCardsList.
+      document.getElementById('input-deleted-cards-list').value = JSON.stringify(deletedCardsList);
+    });
+
+  </script>
+{% endblock %}
