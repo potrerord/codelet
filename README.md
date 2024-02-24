@@ -37,7 +37,7 @@ Initiate a session on your local server. You should see `* Debug mode: on` if th
 * Running on https://###.#.#.#:####
 ```
 
-`Cmd + click` on the URL to render the login page on your default browser. You can now use Codelet!
+`⌘CMD + CLICK` on the URL to render the login page on your default browser. You can now use Codelet!
 
 ```
 ⌃CTRL + C
