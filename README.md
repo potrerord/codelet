@@ -35,9 +35,12 @@ Exit the Flask session.
 
 ## SQL Databases
 
-`$ sqlite3 codelet.db`
+```
+$ sqlite3 codelet.db
+sqlite> .schema
+```
 
-Access the SQL databases containing card and user data.
+Access and view the SQL databases containing card and user data.
 
 ## Notes
 
