@@ -1,0 +1,10 @@
+# Anthony Narag
+# 2024-02-23-fri
+# .gitignore file for codelet
+
+# Ignore debug symbols folders.
+*.dSYM/
+
+# Python
+__pycache__/
+.venv/
