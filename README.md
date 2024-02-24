@@ -9,27 +9,39 @@ The backend of this app runs on Python/Flask, using Jinja to create HTML/CSS/Jav
 
 ## Getting started
 
-`$ python -m env .venv`
+```
+$ python -m env .venv
+```
 
-Create a Python virtual environment named "`.venv/`" in the local directory.
+Create a Python virtual environment named `.venv/` in the local directory.
 
-`$ source .venv/bin/activate`
+```
+$ source .venv/bin/activate
+```
 
 Activate the Python virtual environment.
 
-`$ export FLASK_DEBUG=1`
+```
+$ export FLASK_DEBUG=1
+```
 
 Enable the Flask debugger, which allows you to run Codelet on your local system with live changes as the code is updated.
 
-`$ flask run`
+```
+$ flask run
+```
 
-Initiate a session on your local server. You should see "`* Debug mode: on`" if the debugger is active.
+Initiate a session on your local server. You should see `* Debug mode: on` if the debugger is active.
 
-`* Running on https://###.#.#.#:####`
+```
+* Running on https://###.#.#.#:####
+```
 
 `Cmd + click` on the URL to render the login page on your default browser. You can now use Codelet!
 
-`⌃CTRL + C`
+```
+⌃CTRL + C
+```
 
 Exit the Flask session.
 
