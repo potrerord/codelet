@@ -1,13 +1,122 @@
-# Anthony Narag
-# 2024-02-23-fri
-# .gitignore file for codelet
-
-# SQL
-*.db
+# @file   codelet/.gitignore
+# @author Anthony Narag
+# @date   2024-02-24
 
 # Flask
 flask_session/
 
-# Python
+# SQL
+*.db
+
+
+################### Common .gitignore considerations ###################
+
+# gitignore.io macOS: Dirs potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# gitignore.io macOS: Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# gitignore.io macOS: General
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# gitignore.io macOS: Icon -- must end with two \r
+Icon
+
+# gitignore.io macOS: iCloud-generated files (macOS Patch)
+*.icloud
+
+# gitignore.io macOS: Thumbnails
+._*
+
+# IDE: Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# IDE: IntelliJ IDEA
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# IDE: NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# IDE: VS Code
+.editorconfig
+.vscode/
+
+# Language: Python
 __pycache__/
 .venv/
+
+# Large/unrelated files
+*.epub
+*.pdf
+*.ppt
+*.pptx
+
+# octocat: Compiled source files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# octocat: Logs and databases
+*.log
+*.sql
+*.sqlite
+
+# octocat: OS-generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# octocat: Packages -- Better to unpack these files and commit the raw
+# source; git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+############################### Sources ###############################
+
+# octocat (recommended by GitHub)
+# https://docs.github.com/en/enterprise-server@3.11/get-started/getting-started-with-git/ignoring-files
+# https://gist.github.com/octocat/9257657
+
+# gitignore.io
+# https://www.toptal.com/developers/gitignore/api/macos
