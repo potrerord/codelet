@@ -11,11 +11,11 @@ The backend of this app runs on Python/Flask, using Jinja to create HTML/CSS/Jav
 
 `$ python -m env .venv`
 
-Create a Python environment named "`.venv/`" in the local directory.
+Create a Python virtual environment named "`.venv/`" in the local directory.
 
 `$ source .venv/bin/activate`
 
-Activate the Python environment
+Activate the Python virtual environment.
 
 `$ export FLASK_DEBUG=1`
 
