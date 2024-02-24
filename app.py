@@ -1,12 +1,9 @@
 """
-Quizlet-style coding app.
+@file app.py
+@author Anthony Narag
+@date 2024-02-23-fri
 
-Environment command:
-    source env/bin/activate
-
-Test considerations to be changed in the future:
-  - Debug mode: on (app.debug = True, export FLASK_DEBUG=1)
-  - User email: not required
+Main Flask backend control file for Codelet.
 """
 
 from datetime import datetime, timedelta
@@ -110,7 +107,7 @@ def index() -> str:
         """,
         session["user_id"],
     )[0]["username"]
-    
+
     # Get user's current sets.
     user_sets = db.execute(
         """
@@ -149,7 +146,7 @@ def index() -> str:
             past_month_sets.append(set)
         else:
             past_ever_sets.append(set)
-        
+
     # Render index with relevant variables for Jinja templating.
     return render_template("index.html",
                            user_username=user_username,
@@ -236,14 +233,14 @@ def create() -> Union[Tuple[str, int], werkzeugResponse, str]:
                 term,
                 definition
             )
-        
+
         # Redirect to homepage after successful save.
         return redirect("/")
 
     # If user arrived to /create via GET, render page.
     else:
         return render_template("create.html")
-    
+
 
 @app.route("/edit/<int:set_id>", methods=["GET", "POST"])
 @helpers.login_required
@@ -296,7 +293,7 @@ def edit(set_id: int) -> Union[Tuple[str, int], werkzeugResponse, str]:
                         new_flashcards[html_number]= {"term": html_value}
                     else:
                         new_flashcards[html_number]["term"] = html_value
-                
+
                 # If "term" is not in the HTML name, check "definition".
                 elif "definition" in html_name:
                     # Parse the number found at the end of the name.
@@ -368,7 +365,7 @@ def edit(set_id: int) -> Union[Tuple[str, int], werkzeugResponse, str]:
             """,
             set_id
         )[0]["count"]
-        
+
         # Update set database.
         db.execute(
             """
@@ -412,7 +409,7 @@ def edit(set_id: int) -> Union[Tuple[str, int], werkzeugResponse, str]:
         # Redirect to index if they are trying to access an invalid set.
         if set_id not in user_set_ids:
             return redirect("/")
-        
+
         # Get set data.
         set_data = db.execute(
             """
@@ -655,7 +652,7 @@ def set(set_id: int) -> Union[Tuple[str, int], werkzeugResponse, str]:
     # Redirect to index if they are trying to access an invalid set.
     if set_id not in user_set_ids:
         return redirect("/")
-    
+
     # Get set data.
     set_data = db.execute(
         """
