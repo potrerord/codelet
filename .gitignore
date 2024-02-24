@@ -3,7 +3,7 @@
 # .gitignore file for codelet
 
 # SQL
-.db
+*.db
 
 # Python
 __pycache__/
