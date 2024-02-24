@@ -2,8 +2,8 @@
 # 2024-02-23-fri
 # .gitignore file for codelet
 
-# Ignore debug symbols folders.
-*.dSYM/
+# SQL
+.db
 
 # Python
 __pycache__/
