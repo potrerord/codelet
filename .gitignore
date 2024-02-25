@@ -1,6 +1,6 @@
 # @file   codelet/.gitignore
 # @author Anthony Narag
-# @date   2024-02-24
+# @date   2024-02-25
 
 # Flask
 flask_session/
@@ -10,6 +10,19 @@ flask_session/
 
 
 ################### Common .gitignore considerations ###################
+
+# github/gitignore CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
 
 # gitignore.io macOS: Dirs potentially created on remote AFP share
 .AppleDB
@@ -41,6 +54,9 @@ Icon
 # gitignore.io macOS: Thumbnails
 ._*
 
+# IDE: CLion
+cmake-build-debug/
+
 # IDE: Eclipse
 .apt_generated
 .classpath
@@ -54,7 +70,7 @@ bin/
 !**/src/test/**/bin/
 
 # IDE: IntelliJ IDEA
-.idea/
+.idea
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
@@ -114,10 +130,12 @@ Thumbs.db
 *.zip
 
 ############################### Sources ###############################
+# github/gitignore
+# https://github.com/github/gitignore/blob/main/CMake.gitignore
+
+# gitignore.io
+# https://www.toptal.com/developers/gitignore/api/macos
 
 # octocat (recommended by GitHub)
 # https://docs.github.com/en/enterprise-server@3.11/get-started/getting-started-with-git/ignoring-files
 # https://gist.github.com/octocat/9257657
-
-# gitignore.io
-# https://www.toptal.com/developers/gitignore/api/macos
