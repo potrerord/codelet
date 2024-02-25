@@ -97,7 +97,7 @@ def index() -> str:
     """Show user's sets."""
 
     # Get user's username.
-    user_username = db.execute(
+    user_username: str = db.execute(
         """
         SELECT users.username
           FROM users
@@ -107,7 +107,7 @@ def index() -> str:
     )[0]["username"]
 
     # Get user's current sets.
-    user_sets = db.execute(
+    user_sets: list[dict[str, str]] = db.execute(
         """
         SELECT *
           FROM sets
@@ -118,32 +118,33 @@ def index() -> str:
     )
 
     # Get current datetime.
-    current_datetime = datetime.now(pytz.utc)
+    current_datetime: datetime = datetime.now(pytz.utc)
 
     # Initialize empty lists to organize user sets by update time.
-    past_day_sets = []
-    past_week_sets = []
-    past_month_sets = []
-    past_ever_sets = []
+    past_day_sets: list[dict[str, str]] = []
+    past_week_sets: list[dict[str, str]] = []
+    past_month_sets: list[dict[str, str]] = []
+    past_ever_sets: list[dict[str, str]] = []
 
     # Create timedelta objects for comparisons to time differences.
-    one_day = timedelta(days=1)
-    one_week = timedelta(days=7)
-    one_month = timedelta(days=30)
+    one_day: timedelta = timedelta(days=1)
+    one_week: timedelta = timedelta(days=7)
+    one_month: timedelta = timedelta(days=30)
 
-    for set in user_sets:
+    user_set: dict[str, str]
+    for user_set in user_sets:
         # Create date object for update UTC from SQL and make timezone-aware.
-        update_utc = datetime.strptime(set["update_utc"], "%Y-%m-%d %H:%M:%S")
+        update_utc: datetime = datetime.strptime(user_set["update_utc"], "%Y-%m-%d %H:%M:%S")
         update_utc = pytz.utc.localize(update_utc)
 
-        if current_datetime - update_utc < one_day:
-            past_day_sets.append(set)
-        elif current_datetime - update_utc < one_week:
-            past_week_sets.append(set)
-        elif current_datetime - update_utc < one_month:
-            past_month_sets.append(set)
+        if (current_datetime - update_utc) < one_day:
+            past_day_sets.append(user_set)
+        elif (current_datetime - update_utc) < one_week:
+            past_week_sets.append(user_set)
+        elif (current_datetime - update_utc) < one_month:
+            past_month_sets.append(user_set)
         else:
-            past_ever_sets.append(set)
+            past_ever_sets.append(user_set)
 
     # Render index with relevant variables for Jinja templating.
     return render_template("index.html",
@@ -203,7 +204,7 @@ def create() -> tuple[str, int] | werkzeugResponse | str:
             len(flashcards)
         )
 
-        # Get autoincremented set id.
+        # Get auto-incremented set id.
         set_id = db.execute(
             """
             SELECT sets.id
@@ -386,7 +387,6 @@ def edit(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
         # Redirect to homepage after successful save.
         return redirect(f"/set/{set_id}")
 
-
     # If user arrived to /edit via GET, render page.
     else:
         # Get user's current set ids.
@@ -401,8 +401,8 @@ def edit(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
 
         # Check to make sure set belongs to user.
         user_set_ids = []
-        for set in user_sets:
-            user_set_ids.append(set["id"])
+        for user_set in user_sets:
+            user_set_ids.append(user_set["id"])
 
         # Redirect to index if they are trying to access an invalid set.
         if set_id not in user_set_ids:
@@ -645,8 +645,8 @@ def set(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
 
     # Check to make sure set belongs to user.
     user_set_ids = []
-    for set in user_sets:
-        user_set_ids.append(set["id"])
+    for user_set in user_sets:
+        user_set_ids.append(user_set["id"])
 
     # Redirect to index if they are trying to access an invalid set.
     if set_id not in user_set_ids:
