@@ -6,16 +6,14 @@
 Main Flask backend control file for Codelet.
 """
 
-from datetime import datetime, timedelta
-import json
-import re  # regex searches
-import sqlite3
-from typing import Tuple  # used in type hints
-
 from cs50 import SQL  # contains SQL setup
+from datetime import datetime, timedelta
 from flask import Flask, render_template, redirect, request, Response as flaskResponse, session
 from flask_session import Session  # store session data on server side
+import json
 import pytz  # timezone functionality
+import re
+import sqlite3
 from werkzeug import Response as werkzeugResponse
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -159,7 +157,7 @@ def index() -> str:
 
 @app.route("/create", methods=["GET", "POST"])
 @helpers.login_required
-def create() -> Tuple[str, int] | werkzeugResponse | str:
+def create() -> tuple[str, int] | werkzeugResponse | str:
     """Create flashcards."""
 
     # If user arrived to /create via POST,
@@ -244,7 +242,7 @@ def create() -> Tuple[str, int] | werkzeugResponse | str:
 
 @app.route("/edit/<int:set_id>", methods=["GET", "POST"])
 @helpers.login_required
-def edit(set_id: int) -> Tuple[str, int] | werkzeugResponse | str:
+def edit(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
     """Edit flashcards."""
 
     # If user arrived to /edit via POST,
@@ -436,7 +434,7 @@ def edit(set_id: int) -> Tuple[str, int] | werkzeugResponse | str:
                                 set_data=set_data)
 
 @app.route("/login", methods=["GET", "POST"])
-def login() -> Tuple[str, int] | werkzeugResponse | str:
+def login() -> tuple[str, int] | werkzeugResponse | str:
     """Log user in."""
 
     # Clear all session data from session directory.
@@ -491,7 +489,7 @@ def logout() -> werkzeugResponse | str:
 
 
 @app.route("/register", methods=["GET", "POST"])
-def register() -> Tuple[str, int] | werkzeugResponse | str:
+def register() -> tuple[str, int] | werkzeugResponse | str:
     """Register user into codelet.db database via a form."""
 
     # If user navs to /register via POST (e.g. through form submission)
@@ -631,7 +629,7 @@ def register() -> Tuple[str, int] | werkzeugResponse | str:
 
 @app.route("/set/<int:set_id>", methods=["GET", "POST"])
 @helpers.login_required
-def set(set_id: int) -> Tuple[str, int] | werkzeugResponse | str:
+def set(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
     """Display specific set with unique id."""
 
     # Get user's current set ids.
