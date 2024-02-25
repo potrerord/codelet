@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 import pytz
 import requests
 import subprocess
-from typing import Any, Callable, Dict, Tuple, Union
+from typing import Any, Callable, Dict, Tuple
 import urllib.parse
 import uuid
 
@@ -11,7 +11,7 @@ from flask import redirect, render_template, session
 from functools import wraps
 
 
-def apology(message: str, code: int = 400) -> Union[Tuple[str, int], str]:
+def apology(message: str, code: int = 400) -> Tuple[str, int] | str:
     """Render message as an apology to the user."""
 
     def escape(s: str) -> str:
@@ -53,7 +53,7 @@ def login_required(f: Callable) -> Callable:
     return decorated_function
 
 
-def lookup(symbol: str) -> Union[Dict[str, Union[str, float]], None]:
+def lookup(symbol: str) -> Dict[str, str | float] | None:
     """Look up quote for stock symbol argument."""
 
     # Prepare API request with stock symbol, current time, and start time.
@@ -91,7 +91,7 @@ def lookup(symbol: str) -> Union[Dict[str, Union[str, float]], None]:
 
 def sqlf_datetime(raw_datetime: datetime) -> str:
     """Format a datetime in SQL format."""
-    
+
     # Format according to SQL's datetime structure.
     formatted_datetime = raw_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
