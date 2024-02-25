@@ -20,7 +20,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import helpers
 
 # Configure Flask application in current file in debug mode.
-app = Flask(__name__)
+app: Flask = Flask(__name__)
 app.debug = True
 
 # Configure Flask to store sessions on local disk (not signed cookies).
@@ -29,10 +29,10 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Create database file if it does not exist.
-conn = sqlite3.connect("codelet.db")
+conn: sqlite3.connect = sqlite3.connect("codelet.db")
 
 # Create SQL class object from CS50 library with codelet.db database.
-db = SQL("sqlite:///codelet.db")
+db: SQL = SQL("sqlite:///codelet.db")
 
 # TODO: make email not null (when secure)
 # Create users table if it does not already exist.
@@ -152,7 +152,7 @@ def index() -> str:
                            past_week_sets=past_week_sets,
                            past_month_sets=past_month_sets,
                            past_ever_sets=past_ever_sets
-                          )
+                           )
 
 
 @app.route("/create", methods=["GET", "POST"])
@@ -178,7 +178,7 @@ def create() -> tuple[str, int] | werkzeugResponse | str:
 
                 # Save the term.
                 if number not in flashcards:
-                    flashcards[number]= {"term": html_value}
+                    flashcards[number] = {"term": html_value}
                 else:
                     flashcards[number]["term"] = html_value
             # If not, do the same for "definition".
@@ -188,7 +188,7 @@ def create() -> tuple[str, int] | werkzeugResponse | str:
 
                 # Save the definition.
                 if number not in flashcards:
-                    flashcards[number]= {"definition": html_value}
+                    flashcards[number] = {"definition": html_value}
                 else:
                     flashcards[number]["definition"] = html_value
 
@@ -288,7 +288,7 @@ def edit(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
 
                     # Save the term.
                     if html_number not in new_flashcards:
-                        new_flashcards[html_number]= {"term": html_value}
+                        new_flashcards[html_number] = {"term": html_value}
                     else:
                         new_flashcards[html_number]["term"] = html_value
 
@@ -299,7 +299,7 @@ def edit(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
 
                     # Save the definition.
                     if html_number not in new_flashcards:
-                        new_flashcards[html_number]= {"definition": html_value}
+                        new_flashcards[html_number] = {"definition": html_value}
                     else:
                         new_flashcards[html_number]["definition"] = html_value
 
@@ -431,7 +431,8 @@ def edit(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
         )
 
         return render_template("edit.html", flashcard_data=flashcard_data,
-                                set_data=set_data)
+                               set_data=set_data)
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login() -> tuple[str, int] | werkzeugResponse | str:
@@ -510,8 +511,8 @@ def register() -> tuple[str, int] | werkzeugResponse | str:
 
         # Apologize if username has forbidden characters or length.
         if (
-            re.search("[^a-zA-Z0-9_-]", form_username)
-            or not 3 <= len(form_username) <= 16
+                re.search("[^a-zA-Z0-9_-]", form_username)
+                or not 3 <= len(form_username) <= 16
         ):
             return helpers.apology(
                 "Username must only contain alphanumeric characters/"

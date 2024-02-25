@@ -12,7 +12,10 @@ from functools import wraps
 
 
 def apology(message: str, code: int = 400) -> tuple[str, int] | str:
-    """Render message as an apology to the user."""
+    """Render an error message to the user.
+    :param message:
+    :param code:
+    """
 
     def escape(s: str) -> str:
         """Escape special characters.
@@ -92,7 +95,7 @@ def lookup(symbol: str) -> dict[str, str | float] | None:
 def sqlf_datetime(raw_datetime: datetime) -> str:
     """Format a datetime in SQL format."""
 
-    # Format according to SQL's datetime structure.
+    # Format according to the SQL datetime structure.
     formatted_datetime = raw_datetime.strftime("%Y-%m-%d %H:%M:%S")
 
     return formatted_datetime
