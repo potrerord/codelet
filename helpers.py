@@ -10,6 +10,8 @@ import uuid
 from flask import redirect, render_template, session
 from functools import wraps
 
+import enums
+
 
 def apology(message: str, code: int = 400) -> tuple[str, int]:
     """Render an error message to the user.
@@ -38,7 +40,7 @@ def apology(message: str, code: int = 400) -> tuple[str, int]:
             escaped_str: str = arg_str.replace(old_char, new_char)
         return escaped_str
 
-    return render_template("apology.html", top=code, bottom=escape_special_chars(message)), code
+    return render_template(PageName.APOLOGY, top=code, bottom=escape(message)), code
 
 
 def login_required(func: Callable) -> Callable:

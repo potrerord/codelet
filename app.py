@@ -7,18 +7,20 @@ Main Flask backend control file for Codelet.
 """
 from typing import Dict, Any
 
-from cs50 import SQL  # contains SQL setup
-from datetime import datetime, timedelta
-from flask import Flask, render_template, redirect, request, Response as flaskResponse, session
-from flask_session import Session  # store session data on server side
 import json
 import pytz  # timezone functionality
 import re
 import sqlite3
+
+from cs50 import SQL  # contains SQL setup
+from datetime import datetime, timedelta
+from flask import Flask, render_template, redirect, request, Response as flaskResponse, session
+from flask_session import Session  # store session data on server side
 from werkzeug import Response as werkzeugResponse
 from werkzeug.security import check_password_hash, generate_password_hash
 
 import helpers
+from enums import HtmlPageName, RequestMethod, UrlExt
 
 # Configure Flask application in current file in debug mode.
 app: Flask = Flask(__name__)
@@ -92,7 +94,7 @@ def after_request(response: flaskResponse) -> flaskResponse:
     return response
 
 
-@app.route("/")
+@app.route(UrlExt.INDEX)
 @helpers.login_required
 def index() -> str:
     """Show user's sets."""
@@ -148,7 +150,7 @@ def index() -> str:
             past_ever_sets.append(user_set)
 
     # Render index with relevant variables for Jinja templating.
-    return render_template("index.html",
+    return render_template(HtmlPageName.INDEX,
                            user_username=user_username,
                            past_day_sets=past_day_sets,
                            past_week_sets=past_week_sets,
@@ -157,13 +159,13 @@ def index() -> str:
                            )
 
 
-@app.route("/create", methods=["GET", "POST"])
+@app.route(UrlExt.CREATE, methods=[RequestMethod.GET, RequestMethod.POST])
 @helpers.login_required
 def create() -> tuple[str, int] | werkzeugResponse | str:
     """Create flashcards."""
 
     # If user arrived to /create via POST,
-    if request.method == "POST":
+    if request.method == RequestMethod.POST:
         # Verify that form has input.
         if not request.form:
             return helpers.apology("Empty submission.")
@@ -241,16 +243,16 @@ def create() -> tuple[str, int] | werkzeugResponse | str:
 
     # If user arrived to /create via GET, render page.
     else:
-        return render_template("create.html")
+        return render_template(HtmlPageName.CREATE)
 
 
-@app.route("/edit/<int:set_id>", methods=["GET", "POST"])
+@app.route("/edit/<int:set_id>", methods=[RequestMethod.GET, RequestMethod.POST])
 @helpers.login_required
 def edit(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
     """Edit flashcards."""
 
     # If user arrived to /edit via POST,
-    if request.method == "POST":
+    if request.method == RequestMethod.POST:
         # Verify that form has input.
         if not request.form:
             return helpers.apology("Empty submission.")
@@ -433,11 +435,11 @@ def edit(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
             set_id
         )
 
-        return render_template("edit.html", flashcard_data=flashcard_data,
+        return render_template(HtmlPageName.EDIT, flashcard_data=flashcard_data,
                                set_data=set_data)
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route(UrlExt.LOGIN, methods=[RequestMethod.GET, RequestMethod.POST])
 def login() -> tuple[str, int] | werkzeugResponse | str:
     """Log user in."""
 
@@ -445,7 +447,7 @@ def login() -> tuple[str, int] | werkzeugResponse | str:
     session.clear()
 
     # If user reached login route via POST (e.g. submitting a POST form)
-    if request.method == "POST":
+    if request.method == RequestMethod.POST:
         # Ensure username was submitted.
         form_username = request.form.get("username")
         if not form_username:
@@ -478,10 +480,10 @@ def login() -> tuple[str, int] | werkzeugResponse | str:
 
     # If user reached login route via GET (e.g. clicking link; redirect)
     else:
-        return render_template("login.html")
+        return render_template(HtmlPageName.LOGIN)
 
 
-@app.route("/logout")
+@app.route(UrlExt.LOGOUT)
 def logout() -> werkzeugResponse | str:
     """Log user out."""
 
@@ -492,12 +494,12 @@ def logout() -> werkzeugResponse | str:
     return redirect("/")
 
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route(UrlExt.REGISTER, methods=[RequestMethod.GET, RequestMethod.POST])
 def register() -> tuple[str, int] | werkzeugResponse | str:
     """Register user into codelet.db database via a form."""
 
     # If user navs to /register via POST (e.g. through form submission)
-    if request.method == "POST":
+    if request.method == RequestMethod.POST:
         # Retrieve user data from database.
         users = db.execute("SELECT * FROM users")
 
@@ -628,10 +630,10 @@ def register() -> tuple[str, int] | werkzeugResponse | str:
 
     # Render page if user did not arrive via POST.
     else:
-        return render_template("register.html")
+        return render_template(HtmlPageName.REGISTER)
 
 
-@app.route("/set/<int:set_id>", methods=["GET", "POST"])
+@app.route("/set/<int:set_id>", methods=[RequestMethod.GET, RequestMethod.POST])
 @helpers.login_required
 def set(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
     """Display specific set with unique id."""
@@ -677,5 +679,5 @@ def set(set_id: int) -> tuple[str, int] | werkzeugResponse | str:
         set_id
     )
 
-    return render_template("set.html", flashcard_data=flashcard_data,
+    return render_template(HtmlPageName.SET, flashcard_data=flashcard_data,
                            set_data=set_data)
