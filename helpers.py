@@ -11,19 +11,21 @@ from flask import redirect, render_template, session
 from functools import wraps
 
 
-def apology(message: str, code: int = 400) -> tuple[str, int] | str:
+def apology(message: str, code: int = 400) -> tuple[str, int]:
     """Render an error message to the user.
-    :param message:
-    :param code:
+    :param message: TODO
+    :param code: TODO
     """
 
-    def escape(s: str) -> str:
+    def escape_special_chars(arg_str: str) -> str:
         """Escape special characters.
 
         https://github.com/jacebrowning/memegen#special-characters
         """
 
-        for old, new in [
+        old_char: str
+        new_char: str
+        for old_char, new_char in [
             ("-", "--"),
             (" ", "-"),
             ("_", "__"),
@@ -33,25 +35,25 @@ def apology(message: str, code: int = 400) -> tuple[str, int] | str:
             ("/", "~s"),
             ('"', "''"),
         ]:
-            s = s.replace(old, new)
-        return s
+            escaped_str: str = arg_str.replace(old_char, new_char)
+        return escaped_str
 
-    return render_template("apology.html", top=code, bottom=escape(message)), code
+    return render_template("apology.html", top=code, bottom=escape_special_chars(message)), code
 
 
-def login_required(f: Callable) -> Callable:
+def login_required(func: Callable) -> Callable:
     """Decorate functions to require login before accessing routes.
 
     https://flask.palletsprojects.com/en/1.1.x/patterns/viewdecorators/
     """
 
-    @wraps(f)
+    @wraps(func)
     def decorated_function(*args: Any, **kwargs: Any) -> Callable:
         """Redirect user to login if current session has no user_id."""
 
         if session.get("user_id") is None:
             return redirect("/login")
-        return f(*args, **kwargs)
+        return func(*args, **kwargs)
 
     return decorated_function
 
