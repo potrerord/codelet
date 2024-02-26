@@ -10,6 +10,8 @@ import uuid
 from flask import redirect, render_template, session
 from functools import wraps
 
+import enums
+
 
 def apology(message: str, code: int = 400) -> tuple[str, int] | str:
     """Render message as an apology to the user."""
@@ -33,7 +35,7 @@ def apology(message: str, code: int = 400) -> tuple[str, int] | str:
             s = s.replace(old, new)
         return s
 
-    return render_template("apology.html", top=code, bottom=escape(message)), code
+    return render_template(PageName.APOLOGY, top=code, bottom=escape(message)), code
 
 
 def login_required(f: Callable) -> Callable:
