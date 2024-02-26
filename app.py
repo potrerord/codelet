@@ -5,6 +5,7 @@
 
 Main Flask backend control file for Codelet.
 """
+from typing import Dict, Any
 
 from cs50 import SQL  # contains SQL setup
 from datetime import datetime, timedelta
@@ -168,9 +169,11 @@ def create() -> tuple[str, int] | werkzeugResponse | str:
             return helpers.apology("Empty submission.")
 
         # Initialize empty dictionary for parsing flashcard data.
-        flashcards = {}
+        flashcards: dict[Any, dict[str, str]] = {}
 
         # Parse flashcard data from form submissions.
+        html_name: str
+        html_value: str
         for html_name, html_value in request.form.items():
             # Check if the HTML name contains "term".
             if "term" in html_name:
