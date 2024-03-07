@@ -32,7 +32,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Create database file if it does not exist.
-conn: sqlite3.connect = sqlite3.connect("codelet.db")
+conn: sqlite3.Connection = sqlite3.connect("codelet.db")
 
 # Create SQL class object from CS50 library with codelet.db database.
 db: SQL = SQL("sqlite:///codelet.db")
@@ -150,13 +150,14 @@ def index() -> str:
             past_ever_sets.append(user_set)
 
     # Render index with relevant variables for Jinja templating.
-    return render_template(HtmlPageName.INDEX,
-                           user_username=user_username,
-                           past_day_sets=past_day_sets,
-                           past_week_sets=past_week_sets,
-                           past_month_sets=past_month_sets,
-                           past_ever_sets=past_ever_sets
-                           )
+    return render_template(
+        HtmlPageName.INDEX,
+        user_username=user_username,
+        past_day_sets=past_day_sets,
+        past_week_sets=past_week_sets,
+        past_month_sets=past_month_sets,
+        past_ever_sets=past_ever_sets
+    )
 
 
 @app.route(UrlExt.CREATE, methods=[RequestMethod.GET, RequestMethod.POST])
